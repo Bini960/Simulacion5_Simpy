@@ -1,0 +1,13 @@
+# Archivos compilados de Python 
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configuraciones de Editores de Código 
+.vscode/
+.idea/
+*.swp
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db
