@@ -1,36 +1,63 @@
-from Simulacion import Tiago_simulation 
+import matplotlib.pyplot as plt
+from Simulacion import Tiago_simulation
 
 def main():
-    # Cantidades de procesos    
+    plt.style.use('ggplot') 
+
+    # Las diferentes cantidades de procesos 
     cantidades_procesos = [25, 50, 100, 150, 200]
-    
-    # Intervalo de llegada de procesos
-    intervalos_llegada = [10] 
+    # Generará 3 gráficas distintas, una por cada intervalo
+    intervalos = [10, 5, 1] 
 
-    print("Iniciando Tarea 1. Copia los resultados de abajo:\n")
-    print("Intervalo | Procesos | Tiempo Promedio | Desviación Est.")
-    print("-" * 55)
+    # Aquí configuramos las cantidades de la Tarea 3 y 4
+    estrategias = [
+        {"nombre": "Base (RAM=100, 1 CPU, Vel=3)", "ram": 100, "vel": 3, "cpus": 1},
+        {"nombre": "Estrategia A (RAM=200)", "ram": 200, "vel": 3, "cpus": 1},
+        {"nombre": "Estrategia B (CPU Vel=6)", "ram": 100, "vel": 6, "cpus": 1},
+        {"nombre": "Estrategia C (2 CPUs)", "ram": 100, "vel": 3, "cpus": 2}
+    ]
 
-    # Ciclo que recorre el intervalo configurado
-    for intervalo in intervalos_llegada:
+    print("Iniciando simulaciones y generando gráficas con nuevo diseño...")
+
+    # Ciclo que cambia los intervalos (10, 5, 1)
+    for intervalo in intervalos:
+        # Crea un lienzo nuevo para la gráfica con buen tamaño
+        plt.figure(figsize=(10, 6))
+
+        # Ciclo que cambia la configuración de la computadora (prueba las 4 estrategias)
+        for est in estrategias:
+            promedios_estrategia = []
+            
+            # Ciclo que cambia la cantidad de procesos (de 25 hasta 200)
+            for cantidad in cantidades_procesos:
+                
+                # Llama al motor de simulación con los datos de la estrategia actual
+                simulador = Tiago_simulation(
+                    num_procesos=cantidad,
+                    intervalo_llegada=intervalo,
+                    ram_total=est["ram"],
+                    instrucciones_por_ciclos=est["vel"],
+                    num_cpus=est["cpus"]
+                )
+                
+                # Ejecuta la simulación y extrae solo el promedio de tiempo
+                promedio, _ = simulador.ejecutar()
+                # Guarda el resultado para graficarlo después
+                promedios_estrategia.append(promedio)
+
+            plt.plot(cantidades_procesos, promedios_estrategia, marker='D', markersize=7, linewidth=2.5, label=est["nombre"])
+
+        plt.title(f"Tiempo Promedio vs Procesos (Llegada cada {intervalo} seg)", fontsize=14, fontweight='bold')
+        plt.xlabel("Cantidad de Procesos", fontsize=12)
+        plt.ylabel("Tiempo Promedio en el Sistema", fontsize=12)
+        plt.legend(loc="best", shadow=True, fancybox=True) 
+        plt.xticks(cantidades_procesos) 
+
+        # Aviso en la consola para saber en qué parte del proceso va el código
+        print(f"Mostrando gráfica para intervalo {intervalo}. Cierra la ventana para continuar con la siguiente.")
         
-        # Ciclo que recorre las 5 cantidades de procesos
-        for cantidad in cantidades_procesos:
-            
-            # Llama a la clase 
-            simulador = Tiago_simulation(
-                num_procesos=cantidad,
-                intervalo_llegada=intervalo,
-                ram_total=100, # Memoria base de 100
-                instrucciones_por_ciclos=3, # CPU normal de 3 instrucciones por turno
-                num_cpus=1 # Un solo procesador
-            )
-            
-            # Corre la simulación y recibimos los datos matemáticos
-            promedio, desviacion = simulador.ejecutar()
-            
-            # Imprime el resultado 
-            print(f"    {intervalo:2}    |   {cantidad:3}    |      {promedio:.2f}      |      {desviacion:.2f}")
+        # Muestra la ventana en pantalla con la gráfica terminada
+        plt.show()
 
 if __name__ == "__main__":
     main()
