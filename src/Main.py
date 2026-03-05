@@ -17,7 +17,8 @@ def main():
         {"nombre": "Estrategia C (2 CPUs)", "ram": 100, "vel": 3, "cpus": 2}
     ]
 
-    print("Iniciando simulaciones y generando gráficas con nuevo diseño...")
+    print(f"{'Intervalo':<10} | {'Estrategia':<30} | {'Procesos':<10} | {'Promedio':<10} | {'Desviación Est.'}")
+    print("-" * 85)
 
     # Ciclo que cambia los intervalos (10, 5, 1)
     for intervalo in intervalos:
@@ -41,7 +42,11 @@ def main():
                 )
                 
                 # Ejecuta la simulación y extrae solo el promedio de tiempo
-                promedio, _ = simulador.ejecutar()
+                promedio, desviacion = simulador.ejecutar()
+
+                # Imprime los resultados (promedio y desviación) directamente en la consola
+                print(f"{intervalo:<10} | {est['nombre']:<30} | {cantidad:<10} | {promedio:<10.2f} | {desviacion:.2f}")
+
                 # Guarda el resultado para graficarlo después
                 promedios_estrategia.append(promedio)
 
@@ -54,7 +59,9 @@ def main():
         plt.xticks(cantidades_procesos) 
 
         # Aviso en la consola para saber en qué parte del proceso va el código
+        print("-" * 85)
         print(f"Mostrando gráfica para intervalo {intervalo}. Cierra la ventana para continuar con la siguiente.")
+        print("-" * 85)
         
         # Muestra la ventana en pantalla con la gráfica terminada
         plt.show()
